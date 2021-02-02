@@ -1,4 +1,4 @@
-NAME = obj/skraft
+NAME = obj/cppcraft
 .DEFAULT_GOAL := $(NAME)
 
 

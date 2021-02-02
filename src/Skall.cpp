@@ -122,7 +122,7 @@ GLFWwindow* createWindow()
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		Settings::SetResolution(mode->width, mode->height);
 	}
-	GLFWwindow* window = glfwCreateWindow(Settings::Width(), Settings::Height(), "Skall",
+	GLFWwindow* window = glfwCreateWindow(Settings::Width(), Settings::Height(), "CppCraft",
 					      Settings::Fullscreen() ? glfwGetPrimaryMonitor() : NULL, NULL);
 	assert(window);
 	glfwMakeContextCurrent(window);
