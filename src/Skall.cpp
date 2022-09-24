@@ -11,12 +11,11 @@
 #include "Loader.hpp"
 #include "GLDebugContext.hpp"
 #include "Mesh.hpp"
-#include "Cube.hpp"
 #include "Window.hpp"
 #include "Camera.hpp"
 #include "InterfaceMap.hpp"
-#include "Lighting.hpp"
 #include "Material.hpp"
+#include "Renderer.hpp"
 using namespace std;
 using namespace glm;
 
@@ -46,23 +45,7 @@ void run()
 	LOG("Configuring context")
 	configureContex();
 
-	LOG("Loading assets");
-	Mesh cube("Cube", Cube::indices, Cube::vertices);
-	GLTexture grass_diffuse = Loader::LoadTexture("grass_diffuse.png");
-	GLTexture grass_specular = Loader::LoadTexture("grass_specular.png");
-	GLProgram program = Loader::BuildProgram("shader.vert", "shader.frag");
-
-	LOG("Sending assets to GPU");
-	GLuint64 grass_diffuse_handle = grass_diffuse.GetTextureHandleARB();
-	GLuint64 grass_specular_handle = grass_specular.GetTextureHandleARB();
-	glMakeTextureHandleResidentARB(grass_diffuse_handle);
-	glMakeTextureHandleResidentARB(grass_specular_handle);
-	Material grassBlock(32, grass_diffuse_handle, grass_specular_handle);
-
-	LOG("Initializing world");
-	//lighting.addLight(Light({ 1, 1, 1 }, { 1, 1, -1 }, 10));
-	//lighting.addLight(Light({ 1, 1, 1 }, { 1 / 3.f, 1 / 3.f, 1 / 3.f }));
-	InterfaceMap im(program);
+	Renderer renderer();
 
 	LOG("Initialization complete\n");
 	Window::CenterCursor();
@@ -74,7 +57,7 @@ void run()
 				glfwSetWindowShouldClose(window, true);
 			player.ProcessInput();
 		}
-		
+		renderer.Render();
 	}
 	LOG("\n");
 }

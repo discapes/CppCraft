@@ -7,8 +7,10 @@
 #include "Light.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
+#include "InterfaceMap.hpp"
+#include "Window.hpp"
 
-class Renderer {
+struct Renderer {
     struct LightVars {
         ALIGNED(vec3) ambient;
         ALIGNED(bool) flashlight;
@@ -18,6 +20,7 @@ class Renderer {
     std::vector<Mesh> meshes;
     GLVertexArray VAO;
     GLProgram program;
+    InterfaceMap im;
     Camera camera;
 
     Renderer() {

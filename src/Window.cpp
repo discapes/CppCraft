@@ -61,4 +61,7 @@ namespace Window
 		nFrames++;
 		lastTime = time;
 	}
+	void SwapBuffers() {
+		glfwSwapBuffers();
+	}
 }

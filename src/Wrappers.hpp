@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <glm/vec3.hpp>
-#include "Defines.h"
+#include "Defines.hpp"
 
 class GLTexture
 {

@@ -13,4 +13,5 @@ namespace Window
     double LastFrameDuration();
     double FPS();
     void NewFrame();
+    void SwapBuffers();
 }

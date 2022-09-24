@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <array>
 
 using namespace std;
 
@@ -92,7 +93,7 @@ namespace Cube
 	extern const std::vector<Vertex> vertices;
 }
 
-std::unordered_map<const std::string&, Material> loadedMats;
+std::unordered_map<const std::string&, std::pair<Material, std::array<std::shared_ptr<GLTexture>*, 2> > > loadedMats;
 
 Mesh Loader::LoadMesh(std::string_view name, std::vector<std::string>& matNames)
 {
@@ -100,8 +101,10 @@ Mesh Loader::LoadMesh(std::string_view name, std::vector<std::string>& matNames)
 	SSBO<void, Material> matSSBO;
 	for (const std::string& matName : matNames) {
 		if (loadedMats.contains(matName)) {
-			matSSBO.Push(loadedMats.find(matName)->second);
-			// push texlifetimes
+			auto pair = loadedMats.find(matName)->second;
+			matSSBO.Push(pair.first);
+			texLifetimes.push_back(*pair.second[0]);
+			texLifetimes.push_back(*pair.second[1]);
 		} else {
 			std::shared_ptr<GLTexture> diffuseTex = make_shared<GLTexture>();
 			std::shared_ptr<GLTexture> specularTex = make_shared<GLTexture>();
@@ -113,6 +116,7 @@ Mesh Loader::LoadMesh(std::string_view name, std::vector<std::string>& matNames)
 			glMakeTextureHandleResidentARB(specularHandle);
 			Material material{ 32, diffuseHandle, specularHandle };
 			matSSBO.Push(material);
+			loadedMats.emplace(matName, make_pair(material, std::array{ &diffuseTex, &specularTex }));
 		}
 	}
 	if (name == "Cube") {
