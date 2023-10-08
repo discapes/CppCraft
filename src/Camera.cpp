@@ -4,14 +4,21 @@
 #include <iostream>
 using namespace glm;
 
+
 void Cameraman::ProcessMouse()
 {
-	static dvec2 prevcursorpos = { 0, 0 };
+	static int nProcessed = 0;
+	if (nProcessed < 10) {
+		nProcessed++;
+		return;
+	}
+	static dvec2 prevcursorpos = Window::CursorPos();
 	dvec2 cursorpos = Window::CursorPos();
     dvec2 cpos = cursorpos - prevcursorpos;
 	prevcursorpos = cursorpos;
 	camera.longtitude += lookSpeed * 0.005 * cpos.x;
 	camera.latitude += lookSpeed * 0.005 * cpos.y;
+	
 	camera.latitude = clamp(camera.latitude, -1., 1.);
 	if (camera.longtitude > 1.) camera.longtitude = -1.;
     else if (camera.longtitude < -1.) camera.longtitude = 1.;
@@ -34,6 +41,7 @@ void Cameraman::ProcessMouse()
 		cosLat,
 		sinLat * cosLong
 	);
+	
 	
     camera.viewMatrix = glm::lookAt(camera.pos, camera.pos + camera.forward, up);
 }

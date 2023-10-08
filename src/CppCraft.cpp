@@ -58,7 +58,6 @@ void run()
 	InterfaceMap im(program);
 
 	LOG("Initialization complete\n");
-	Window::CenterCursor();
 	while (!glfwWindowShouldClose(window)) {
 		Window::NewFrame();
 		{ // INPUT
