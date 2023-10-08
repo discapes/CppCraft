@@ -35,7 +35,11 @@ void run()
 	Window::SetWindow(window);
 
 	LOG("Loading OpenGL functions");
+#ifdef GLAD_GL_H_
+	assert(gladLoadGL(glfwGetProcAddress));
+#else
 	assert(gladLoadGL());
+#endif
 	if (!GLAD_GL_ARB_bindless_texture)
 		FAIL("GPU unsupported (GL_ARB_bindless_texture)");
 
