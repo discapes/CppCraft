@@ -204,7 +204,6 @@ class GLProgram
 	{
 		return glProgramUniformMatrix4fv(program, location, count, transpose, value);
 	}
-	void Uniform3f(GLint location, glm::vec3 v) { 
-		return glProgramUniform3f(program, location, v.x, v.y, v.z);
-	}
+	void Uniform3f(GLint location, glm::vec3 v) { return glProgramUniform3f(program, location, v.x, v.y, v.z); }
+	void Uniform1f(GLint location, float v) { return glProgramUniform1f(program, location, v); }
 };

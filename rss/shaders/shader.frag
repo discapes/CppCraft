@@ -1,7 +1,4 @@
 #version 430 core
-#extension GL_ARB_bindless_texture : enable
-layout(bindless_sampler) uniform;
-layout(bindless_image) uniform;
 
 #define AMBIENT 0.2
 #define DIFFUSE 0.5
@@ -32,13 +29,11 @@ layout (std430, binding = 0) buffer Lights {
     Light lights[];
 };
 
-layout (std140, binding = 0) uniform Material  {
-    float shine;
-    sampler2D diffuse;
-    sampler2D specular;
-} mat;
-
+uniform float shine;
 uniform vec3 camPos;
+// https://www.khronos.org/opengl/wiki/Sampler_(GLSL)#Version_4.20_binding
+layout(binding=0) uniform sampler2D diffuse;
+layout(binding=1) uniform sampler2D specular;
 
 vec4 calcColor(Light light) {
     vec4 color = vec4(0);
@@ -47,10 +42,10 @@ vec4 calcColor(Light light) {
         vec3 lightDir = normalize(light.type == 1 ? -light.dir : light.pos - frag.pos);
         float diffPower = max(dot(normal, lightDir), 0);
         vec3 reflection = reflect(-lightDir, normal);
-        float specPower = pow(max(dot(normalize(camPos - frag.pos), reflection), 0), mat.shine);
-        vec4 ambient = AMBIENT * vec4(light.color, 1) * texture(mat.diffuse, frag.uv);
-        vec4 diffuse = DIFFUSE * vec4(light.color, 1) * texture(mat.diffuse, frag.uv) * diffPower;
-        vec4 specular = SPECULAR * vec4(light.color, 1) * texture(mat.specular, frag.uv) * specPower;
+        float specPower = pow(max(dot(normalize(camPos - frag.pos), reflection), 0), shine);
+        vec4 ambient = AMBIENT * vec4(light.color, 1) * texture(diffuse, frag.uv);
+        vec4 diffuse = DIFFUSE * vec4(light.color, 1) * texture(diffuse, frag.uv) * diffPower;
+        vec4 specular = SPECULAR * vec4(light.color, 1) * texture(specular, frag.uv) * specPower;
         color = ambient + diffuse + specular;
 
         if (light.type >= 2) {

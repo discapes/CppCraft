@@ -40,8 +40,6 @@ void run()
 #else
 	assert(gladLoadGL());
 #endif
-	if (!GLAD_GL_ARB_bindless_texture)
-		FAIL("GPU unsupported (GL_ARB_bindless_texture)");
 
 	LOG("Configuring context")
 	configureContex();
@@ -51,13 +49,6 @@ void run()
 	GLTexture grass_diffuse = Loader::LoadTexture("grass_diffuse.png");
 	GLTexture grass_specular = Loader::LoadTexture("grass_specular.png");
 	GLProgram program = Loader::BuildProgram("shader.vert", "shader.frag");
-
-	LOG("Sending assets to GPU");
-	GLuint64 grass_diffuse_handle = grass_diffuse.GetTextureHandleARB();
-	GLuint64 grass_specular_handle = grass_specular.GetTextureHandleARB();
-	glMakeTextureHandleResidentARB(grass_diffuse_handle);
-	glMakeTextureHandleResidentARB(grass_specular_handle);
-	Material grassBlock(32, grass_diffuse_handle, grass_specular_handle);
 
 	LOG("Initializing world");
 	Lighting lighting;
@@ -80,11 +71,13 @@ void run()
 			im.SetM(M);
 			im.SetMVP(MVP);
 			im.SetCamPos(camera.Pos());
+			im.SetShine(32);
 		}
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		{ // DRAWING
 			lighting.Bind();
-			grassBlock.Bind();
+			grass_diffuse.Bind(0);
+			grass_specular.Bind(1);
 			program.Use();
 			cube.Draw();
 		}
